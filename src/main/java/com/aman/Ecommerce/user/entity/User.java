@@ -1,10 +1,8 @@
 package com.aman.Ecommerce.user.entity;
 
+import io.swagger.v3.oas.annotations.info.Contact;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
@@ -17,6 +15,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users",
