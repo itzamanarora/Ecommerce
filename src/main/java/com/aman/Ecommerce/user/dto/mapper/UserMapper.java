@@ -5,6 +5,8 @@ import com.aman.Ecommerce.user.dto.response.UserResponse;
 import com.aman.Ecommerce.user.entity.RoleType;
 import com.aman.Ecommerce.user.entity.User;
 
+import java.util.List;
+
 public class UserMapper {
 
     public static User toUser(UserRegisterRequest userRegisterRequest) {

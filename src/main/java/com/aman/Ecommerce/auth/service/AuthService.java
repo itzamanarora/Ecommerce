@@ -1,7 +1,8 @@
 package com.aman.Ecommerce.auth.service;
 
-import com.aman.Ecommerce.auth.dto.mapper.AuthMapper;
 import com.aman.Ecommerce.auth.dto.request.SignUpRequest;
+import com.aman.Ecommerce.user.dto.mapper.UserMapper;
+import com.aman.Ecommerce.user.dto.response.UserResponse;
 import com.aman.Ecommerce.user.entity.RoleType;
 import com.aman.Ecommerce.user.entity.User;
 import com.aman.Ecommerce.user.entity.UserStatus;
@@ -9,8 +10,6 @@ import com.aman.Ecommerce.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Locale;
 import java.util.Set;
 
 @Service
@@ -26,7 +25,7 @@ public class AuthService {
     }
 
     @Transactional
-    public User saveUser(SignUpRequest signUpRequest){
+    public UserResponse saveUser(SignUpRequest signUpRequest){
         String email = signUpRequest.getEmail().toLowerCase().trim();
 
         if(userRepository.existsByEmail(email)) {
@@ -42,6 +41,8 @@ public class AuthService {
                 .roles(Set.of(RoleType.USER))
                 .build();
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        return UserMapper.toUserResponse(savedUser);
     }
 }

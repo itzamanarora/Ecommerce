@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -35,5 +37,12 @@ public class UserService {
         User user = UserMapper.toUser(userRegisterRequest);
         User savedUser = userRepository.save(user);
         return UserMapper.toUserResponse(savedUser);
+    }
+
+    public UserResponse getUser(String email) {
+        User user =  userRepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("User Not Found")
+        );
+        return UserMapper.toUserResponse(user);
     }
 }
