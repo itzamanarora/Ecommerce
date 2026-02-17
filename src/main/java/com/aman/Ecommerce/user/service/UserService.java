@@ -4,7 +4,9 @@ import com.aman.Ecommerce.user.dto.mapper.UserMapper;
 import com.aman.Ecommerce.user.dto.request.UserRegisterRequest;
 import com.aman.Ecommerce.user.dto.response.UserResponse;
 import com.aman.Ecommerce.user.entity.User;
+import com.aman.Ecommerce.user.entity.UserStatus;
 import com.aman.Ecommerce.user.repository.UserRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,8 +43,29 @@ public class UserService {
 
     public UserResponse getUser(String email) {
         User user =  userRepository.findByEmail(email).orElseThrow(
-                () -> new RuntimeException("User Not Found")
+                () -> new RuntimeException("User Not Found!")
         );
         return UserMapper.toUserResponse(user);
+    }
+
+    public List<User> findByStatus(String status) {
+        return userRepository.findByStatus(status);
+    }
+
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("User Not Found!")
+        );
+
+        user.setStatus(UserStatus.DELETED);
+        userRepository.save(user);
+    }
+
+    public void suspendUser(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("User Not Found!")
+        );
+        user.setStatus(UserStatus.SUSPENDED);
+        userRepository.save(user);
     }
 }
