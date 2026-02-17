@@ -5,28 +5,35 @@ import com.aman.Ecommerce.user.dto.request.UserRegisterRequest;
 import com.aman.Ecommerce.user.dto.response.UserResponse;
 import com.aman.Ecommerce.user.entity.User;
 import com.aman.Ecommerce.user.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
 
-    public final UserRepository userRepository;
+    private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService (UserRepository userRepository) {
+    public UserService (UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public boolean isEmailAlreadyExists(String email) {
         return userRepository.existsByEmail(email);
     }
 
+    @Transactional
     public UserResponse saveUser(UserRegisterRequest userRegisterRequest) {
         if(userRepository.existsByEmail(userRegisterRequest.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
-       User user = UserMapper.toUser(userRegisterRequest);
-       User savedUser = userRepository.save(user);
-       return UserMapper.toUserResponse(savedUser);
+        String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
+        userRegisterRequest.setPassword(encodedPassword);
+        User user = UserMapper.toUser(userRegisterRequest);
+        User savedUser = userRepository.save(user);
+        return UserMapper.toUserResponse(savedUser);
     }
 }
